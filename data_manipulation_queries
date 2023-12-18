@@ -1,0 +1,52 @@
+# As a market analyst, I need to know which types of potatoes are most popular among consumers to focus on market trends.
+SELECT Potato.type, COUNT(*) AS SalesCount
+FROM Potato
+JOIN Recipe ON Recipe.potatoType = Potato.type
+JOIN Ingredients ON Ingredients.recipeName = Recipe.recipeName
+JOIN SellsTo ON SellsTo.consumerID = Recipe.consumerID
+GROUP BY Potato.type
+ORDER BY SalesCount DESC
+LIMIT 10;
+
+# As a farm manager, I want to see a list of farms along with their total output and the types of potatoes they produce.
+SELECT Farm.ID, Farm.totalOutput, GROUP_CONCAT(DISTINCT Potato.type) AS PotatoTypes
+FROM Farm
+JOIN Potato ON Farm.ID = Potato.farmID
+GROUP BY Farm.ID;
+
+# As an equipment supplier, I need a report on which farming equipment is used most frequently by farmers.
+SELECT FarmingEquipment.name, COUNT(DISTINCT Farmer.ID) AS NumberOfFarmersUsing
+FROM FarmingEquipment
+JOIN Farmer ON FarmingEquipment.ownerID = Farmer.ID
+GROUP BY FarmingEquipment.name
+ORDER BY NumberOfFarmersUsing DESC;
+
+# As a distributor, I need a list of importers and exporters of potatoes, including their locations
+and the number of transactions.
+SELECT Importer.companyName AS ImporterName, Exporter.companyName AS ExporterName, Importer.homeCity, Exporter.branchNo, COUNT(*) AS NumberOfTransactions
+FROM Importer
+JOIN Exporter ON Importer.exporterCompany = Exporter.companyName AND Importer.exporterBranch = Exporter.branchNo
+GROUP BY Importer.companyName, Importer.homeCity, Exporter.companyName;
+
+# As a retailer, I need to understand consumer preferences for potato types in different regions to tailor my inventory.
+SELECT Consumer.homeRegion, Potato.type, COUNT(*) AS PreferenceCount
+FROM Consumer
+JOIN Recipe ON Consumer.ID = Recipe.consumerID
+JOIN Potato ON Recipe.potatoType = Potato.type
+GROUP BY Consumer.homeRegion, Potato.type
+ORDER BY Consumer.homeRegion, PreferenceCount DESC;
+
+
+# As a supply chain analyst, I want to track the journey of potatoes from farms through processing
+# companies to retailers, to understand the supply chain dynamics.
+SELECT Farm.ID                     AS FarmID,
+       ProcessingCompany.ID        AS ProcessingCompanyID,
+       Retailer.ID                 AS RetailerID,
+       COUNT(DISTINCT Potato.type) AS TypesOfPotatoes
+FROM Farm
+         JOIN Potato ON Farm.ID = Potato.farmID
+         JOIN ProcessingCompany ON Potato.processingCompanyID = ProcessingCompany.ID
+         JOIN Recipe ON Potato.type = Recipe.potatoType
+         JOIN SellsTo ON Recipe.consumerID = SellsTo.consumerID
+         JOIN Retailer ON SellsTo.retailerID = Retailer.ID
+GROUP BY Farm.ID, ProcessingCompany.ID, Retailer.ID;
