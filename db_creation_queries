@@ -1,668 +1,271 @@
-# #   Potato [type, price, maxSize, marketPotential, processingCompanyID, storageFacilityID, farmID]
-# CREATE TABLE Potato
-# (
-#     type                VARCHAR(255) UNIQUE NOT NULL,
-#     price               INT,
-#     maxSize             DOUBLE,
-# #     MarketPotential
-#     processingCompanyID INT,
-#     storageFacilityID   INT,
-#     farmID              INT,
-#     PRIMARY KEY (type),
-#     FOREIGN KEY (processingCompanyID) REFERENCES ProcessingCompany (ID),
-#     Foreign Key (storageFacilityID) REFERENCES StorageFacility (ID),
-#     FOREIGN KEY (farmID) REFERENCES Farm (ID)
-# );
-#
-# ALTER TABLE potato
-# ADD CONSTRAINT UNIQUE(type);
-#
-# # alter table xx drop primary key, add primary key(k1, k2, k3);
-# ALTER TABLE potato DROP PRIMARY KEY, ADD PRIMARY KEY (type)
-#
-# #     Farm [ID, Address, Location, Size, totalOutput, certificationAgencyID, certificationGrade, seedSupplierID]
-# CREATE TABLE Farm
-# (
-#     ID                    INT UNIQUE NOT NULL,
-#     address               VARCHAR(255),
-#     location              VARCHAR(255),
-#     size                  INT,
-#     totalOutput           DOUBLE,
-#     certificationAgencyID INT,
-#     certificationGrade    CHAR,
-#     seedSupplierID        INt,
-#     PRIMARY KEY (ID),
-#     FOREIGN KEY (certificationAgencyID) REFERENCES CertificationAgency (companyID),
-#     FOREIGN KEY (seedSupplierID) REFERENCES SeedSupplier (ID)
-# );
-#
-# #     Farmer [ID, name, phone, shift, managerID, FarmID]
-# CREATE TABLE Farmer
-# (
-#     ID        INT UNIQUE NOT NULL,
-#     name      VARCHAR(255),
-#     phone     INT,
-#     shift     INT,
-#     managerID INT,
-#     farmID    INT,
-#     PRIMARY KEY (ID),
-#     FOREIGN KEY (managerID) REFERENCES Farmer (ID),
-#     FOREIGN KEY (farmID) REFERENCES Farm (ID)
-# );
-# #     SeedSupplier [ID, growthRegion]
-#
-# CREATE TABLE SeedSupplier
-# (
-#     ID           INT UNIQUE NOT NULL,
-#     growthRegion VARCHAR(255),
-#     PRIMARY KEY (ID)
-# );
-#
-#
-# #     SeedType [seedSupplierID, farmID, seedType]
-# CREATE TABLE SeedType
-# (
-#     seedSupplierID INT,
-#     farmID         INT,
-#     seedType       VARCHAR(255),
-#     FOREIGN KEY (seedSupplierID) REFERENCES SeedSupplier (ID),
-#     FOREIGN KEY (farmID) REFERENCES Farm (ID)
-# );
-# ###################
-#
-# CREATE TABLE StorageFacility
-# (
-#     ID       INTEGER,
-#     location CHAR(50),
-#     capacity INTEGER,
-#     PRIMARY KEY (ID)
-# );
-#
-# CREATE TABLE ProcessingCompany
-# (
-#     ID           INTEGER,
-#     location     CHAR(50),
-#     wasteCompany INTEGER,
-#     PRIMARY KEY (ID),
-#     FOREIGN KEY (wasteCompany) REFERENCES WasteManagement (ID)
-# );
-#
-# CREATE TABLE CertificationAgency
-# (
-#     companyID INTEGER,
-#     `name`    CHAR(20),
-#     region    CHAR(20),
-#     PRIMARY KEY (companyID)
-# );
-#
-# CREATE TABLE WasteManagement
-# (
-#     ID       INTEGER,
-#     location CHAR(50),
-#     PRIMARY KEY (ID)
-# );
-#
-# CREATE TABLE ProcessingCompany
-# (
-#     ID           INTEGER,
-#     location     CHAR(50),
-#     wasteCompany INTEGER,
-#     PRIMARY KEY (ID),
-#     FOREIGN KEY (wasteCompany) REFERENCES WasteManagement (ID)
-# );
-#
-# CREATE TABLE ProcessingEquipment
-# (
-#     serialNum          INTEGER,
-#     processingCapacity INTEGER,
-#     ownerID            INTEGER,
-#     PRIMARY KEY (serialNum),
-#     FOREIGN KEY (serialNum) references Equipment (serialNum) ON DELETE CASCADE,
-#     FOREIGN KEY (ownerID) references ProcessingCompany (ID) ON DELETE SET NULL
-# );
-#
-#
-# CREATE TABLE Exporter
-# (
-#     companyName VARCHAR(255),
-#     branchNo    INTEGER,
-#     PRIMARY KEY (companyName, branchNo)
-# );
-#
-# CREATE TABLE Importer
-# (
-#     companyName     VARCHAR(255),
-#     homeCity        VARCHAR(255),
-#     distributorID   INT,
-#     exporterCompany VARCHAR(255),
-#     exporterBranch  INT,
-#     PRIMARY KEY (companyName, homeCity),
-#     FOREIGN KEY (distributorID) REFERENCES Distributor (ID),
-#     FOREIGN KEY (exporterCompany) REFERENCES Exporter (companyName),
-#     FOREIGN KEY (exporterBranch) REFERENCES Exporter (branchNo)
-# );
-#
-# CREATE TABLE Retailer
-# (
-#     ID            INT,
-#     yearlyProfit  FLOAT,
-#     distributorID INT,
-#     PRIMARY KEY (ID),
-#     FOREIGN KEY (distributorID) REFERENCES Distributor (ID)
-# );
-#
-# CREATE TABLE Consumer
-# (
-#     ID            INT,
-#     firstName     TEXT,
-#     middleName    TEXT,
-#     lastName      TEXT,
-#     yearlyExpense FLOAT,
-#     homeRegion    TEXT,
-#     PRIMARY KEY (ID)
-# );
-#
-# CREATE TABLE SellsTo
-# (
-#     retailerID INT,
-#     consumerID INT,
-#     price      FLOAT,
-#     PRIMARY KEY (retailerID, consumerID),
-#     FOREIGN KEY (retailerID) REFERENCES Retailer (ID),
-#     FOREIGN KEY (consumerID) REFERENCES Consumer (ID)
-# );
-#
-# CREATE TABLE StoreLocation
-# (
-#     retailerID INT,
-#     location   VARCHAR(255),
-#     PRIMARY KEY (retailerID, location),
-#     FOREIGN KEY (retailerID) REFERENCES Retailer (ID)
-# );
-#
-# CREATE TABLE Ingredients
-# (
-#     recipeName VARCHAR(50),
-#     ingredient VARCHAR(255),
-#     PRIMARY KEY (recipeName, ingredient),
-#     FOREIGN KEY (recipeName) REFERENCES Recipe (recipeName)
-# );
-#
-# CREATE TABLE Equipment
-# (
-#     serialNum int,
-#     purpose   varchar(150),
-#     PRIMARY KEY (serialNum)
-# );
-#
-# CREATE TABLE MarketAnalyst
-# (
-#     analystID int,
-#     name      varchar(50),
-#     PRIMARY KEY (analystID)
-# );
-#
-# CREATE TABLE TradeShow
-# (
-#     showID   int,
-#     location varchar(150),
-#     PRIMARY KEY (showID)
-# );
-#
-# CREATE TABLE Distributor
-# (
-#     ID          int,
-#     tradeShowID int,
-#     PRIMARY KEY (ID),
-#     FOREIGN KEY (tradeShowID) REFERENCES TradeShow (showID)
-# );
-#
-# CREATE TABLE Advertiser
-# (
-#     name        varchar(50),
-#     company     varchar(50),
-#     tradeShowID int,
-#     PRIMARY KEY (name),
-#     FOREIGN KEY (tradeShowID) REFERENCES TradeShow (showID)
-# );
-#
-# CREATE TABLE FarmingEquipment
-# (
-#     serialNum int,
-#     name      varchar(50),
-#     ownerID   int,
-#     PRIMARY KEY (serialNum),
-#     FOREIGN KEY (serialNum) REFERENCES Equipment (serialNum),
-#     FOREIGN KEY (ownerID) REFERENCES Farmer (ID)
-# );
-#
-# CREATE TABLE ShowAttendees
-# (
-#     showID        int,
-#     farmerID      int,
-#     researcherID  int,
-#     distributorID int,
-#     PRIMARY KEY (showID, farmerID, researcherID, distributorID),
-#     FOREIGN KEY (showID) REFERENCES TradeShow (showID),
-#     FOREIGN KEY (farmerID) REFERENCES Farmer (ID),
-#     FOREIGN KEY (researcherID) REFERENCES Researcher (ID),
-#     FOREIGN KEY (distributorID) REFERENCES Distributor (ID)
-# );
-#
-# CREATE TABLE Researcher
-# (
-#     ID          int,
-#     focus       varchar(50),
-#     yearsActive int,
-#     supplierID  int,
-#     PRIMARY KEY (ID),
-#     FOREIGN KEY (supplierID) REFERENCES SeedSupplier (ID)
-# );
-#
-# CREATE TABLE Recipe
-# (
-#     recipeName   varchar(50),
-#     potatoType   varchar(50),
-#     consumerID   int,
-#     cookingStyle varchar(50),
-#     PRIMARY KEY (recipeName, potatoType, consumerID),
-#     FOREIGN KEY (potatoType) REFERENCES Potato (type),
-#     FOREIGN KEY (consumerID) REFERENCES Consumer (ID)
-# );
+#   Potato [type, price, maxSize, marketPotential, processingCompanyID, storageFacilityID, farmID]
+CREATE TABLE Potato
+(
+    type                VARCHAR(255) UNIQUE NOT NULL,
+    price               INT,
+    maxSize             DOUBLE,
+#     MarketPotential
+    processingCompanyID INT,
+    storageFacilityID   INT,
+    farmID              INT,
+    PRIMARY KEY (type),
+    FOREIGN KEY (processingCompanyID) REFERENCES ProcessingCompany (ID),
+    Foreign Key (storageFacilityID) REFERENCES StorageFacility (ID),
+    FOREIGN KEY (farmID) REFERENCES Farm (ID)
+);
+
+ALTER TABLE potato
+ADD CONSTRAINT UNIQUE(type);
+
+# alter table xx drop primary key, add primary key(k1, k2, k3);
+ALTER TABLE potato DROP PRIMARY KEY, ADD PRIMARY KEY (type)
+
+#     Farm [ID, Address, Location, Size, totalOutput, certificationAgencyID, certificationGrade, seedSupplierID]
+CREATE TABLE Farm
+(
+    ID                    INT UNIQUE NOT NULL,
+    address               VARCHAR(255),
+    location              VARCHAR(255),
+    size                  INT,
+    totalOutput           DOUBLE,
+    certificationAgencyID INT,
+    certificationGrade    CHAR,
+    seedSupplierID        INt,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (certificationAgencyID) REFERENCES CertificationAgency (companyID),
+    FOREIGN KEY (seedSupplierID) REFERENCES SeedSupplier (ID)
+);
+
+#     Farmer [ID, name, phone, shift, managerID, FarmID]
+CREATE TABLE Farmer
+(
+    ID        INT UNIQUE NOT NULL,
+    name      VARCHAR(255),
+    phone     INT,
+    shift     INT,
+    managerID INT,
+    farmID    INT,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (managerID) REFERENCES Farmer (ID),
+    FOREIGN KEY (farmID) REFERENCES Farm (ID)
+);
+#     SeedSupplier [ID, growthRegion]
+
+CREATE TABLE SeedSupplier
+(
+    ID           INT UNIQUE NOT NULL,
+    growthRegion VARCHAR(255),
+    PRIMARY KEY (ID)
+);
 
 
-# INSERT INTO SeedSupplier (ID, growthRegion)
-# VALUES
-# (1, 'North America'),
-# (2, 'Europe'),
-# (3, 'Asia'),
-# (4, 'South America'),
-# (5, 'Africa'),
-# (6, 'Oceania'),
-# (7, 'Central America'),
-# (8, 'Middle East'),
-# (9, 'Caribbean'),
-# (10, 'Antarctica');
-#
-# INSERT INTO StorageFacility (ID, location, capacity)
-# VALUES
-# (1, 'Warehouse A', 1000),
-# (2, 'Storage Building B', 1500),
-# (3, 'Facility C', 2000),
-# (4, 'Storage Warehouse D', 1200),
-# (5, 'Storage Area E', 1800),
-# (6, 'Warehouse F', 2500),
-# (7, 'Storage Center G', 3000),
-# (8, 'Facility H', 1700),
-# (9, 'Warehouse I', 1400),
-# (10, 'Storage Depot J', 2700);
-#
-# INSERT INTO WasteManagement (ID, location)
-# VALUES
-# (1, 'Waste Disposal Site A'),
-# (2, 'Recycling Center B'),
-# (3, 'Waste Processing Plant C'),
-# (4, 'Landfill Site D'),
-# (5, 'Composting Facility E'),
-# (6, 'Incineration Plant F'),
-# (7, 'Biogas Plant G'),
-# (8, 'Hazardous Waste Facility H'),
-# (9, 'Waste Transfer Station I'),
-# (10, 'Materials Recovery Facility J');
-#
-# INSERT INTO ProcessingCompany (ID, location, wasteCompany)
-# VALUES
-# (1, 'Processing Plant A', 1),
-# (2, 'Factory B', 2),
-# (3, 'Processing Facility C', 3),
-# (4, 'Manufacturing Plant D', 4),
-# (5, 'Processing Center E', 5),
-# (6, 'Production Facility F', 6),
-# (7, 'Processing Warehouse G', 7),
-# (8, 'Factory H', 8),
-# (9, 'Processing Plant I', 9),
-# (10, 'Manufacturing Center J', 10);
-#
-# INSERT INTO CertificationAgency (companyID, name, region)
-# VALUES
-# (1, 'CertCo A', 'North'),
-# (2, 'CertCo B', 'South'),
-# (3, 'CertCo C', 'East'),
-# (4, 'CertCo D', 'West'),
-# (5, 'CertCo E', 'Central'),
-# (6, 'CertCo F', 'North-East'),
-# (7, 'CertCo G', 'South-East'),
-# (8, 'CertCo H', 'North-West'),
-# (9, 'CertCo I', 'South-West'),
-# (10, 'CertCo J', 'Central-East');
-#
-# INSERT INTO Exporter (companyName, branchNo)
-# VALUES
-# ('ExportCo A', 1),
-# ('Global Exporters B', 2),
-# ('Export Solutions C', 3),
-# ('ExportCo D', 4),
-# ('International Exports E', 5),
-# ('Export Group F', 6),
-# ('Global Solutions G', 7),
-# ('Exporters International H', 8),
-# ('Worldwide Exports I', 9),
-# ('ExportCo J', 10);
-#
-# INSERT INTO Consumer (ID, firstName, middleName, lastName, yearlyExpense, homeRegion)
-# VALUES
-# (1, 'Alice', 'M.', 'Johnson', 3500.0, 'Region A'),
-# (2, 'Bob', 'N.', 'Smith', 4200.0, 'Region B'),
-# (3, 'Charlie', 'O.', 'Williams', 3800.0, 'Region C'),
-# (4, 'Diana', 'P.', 'Brown', 4000.0, 'Region D'),
-# (5, 'Edward', 'Q.', 'Miller', 4300.0, 'Region E'),
-# (6, 'Fiona', 'R.', 'Davis', 3700.0, 'Region F'),
-# (7, 'George', 'S.', 'Wilson', 4100.0, 'Region G'),
-# (8, 'Hannah', 'T.', 'Martinez', 3600.0, 'Region H'),
-# (9, 'Isaac', 'U.', 'Garcia', 3900.0, 'Region I'),
-# (10, 'Jessica', 'V.', 'Lee', 4400.0, 'Region J');
-#
-# INSERT INTO TradeShow (showID, location)
-# VALUES
-# (1, 'Convention Center A'),
-# (2, 'Expo Hall B'),
-# (3, 'Trade Fair C'),
-# (4, 'Exhibition Center D'),
-# (5, 'Conference Hall E'),
-# (6, 'Event Arena F'),
-# (7, 'Trade Expo G'),
-# (8, 'Convention Complex H'),
-# (9, 'Fairgrounds I'),
-# (10, 'Expo Center J');
-#
-# INSERT INTO Distributor (ID, tradeShowID)
-# VALUES
-# (1, 1),
-# (2, 2),
-# (3, 3),
-# (4, 4),
-# (5, 5),
-# (6, 6),
-# (7, 7),
-# (8, 8),
-# (9, 9),
-# (10, 10);
-#
-# INSERT INTO Importer (companyName, homeCity, distributorID, exporterCompany, exporterBranch)
-# VALUES
-# ('Importer A', 'Vancouver', 1, 'ExportCo A', 1),
-# ('Import Solutions B', 'Banff', 2, 'Global Exporters B', 2),
-# ('International Imports C', 'Castlegar', 3, 'Export Solutions C', 3),
-# ('Importer D', 'Calgary', 4, 'ExportCo D', 4),
-# ('Global Imports E', 'Toronto', 5, 'International Exports E', 5),
-# ('ImportCo F', 'Ottawa', 6, 'Export Group F', 6),
-# ('Imports International G', 'Winnipeg', 7, 'Global Solutions G', 7),
-# ('Worldwide Imports H', 'Saskatoon', 8, 'Exporters International H', 8),
-# ('Importer I', 'Fredericton', 9, 'Worldwide Exports I', 9),
-# ('ImportCo J', 'Victoria', 10, 'ExportCo J', 10);
-#
-# INSERT INTO Retailer (ID, yearlyProfit, distributorID)
-# VALUES
-# (1, 50000.0, 1),
-# (2, 75000.0, 2),
-# (3, 60000.0, 3),
-# (4, 80000.0, 4),
-# (5, 90000.0, 5),
-# (6, 70000.0, 6),
-# (7, 85000.0, 7),
-# (8, 72000.0, 8),
-# (9, 68000.0, 9),
-# (10, 82000.0, 10);
-#
-# INSERT INTO StoreLocation (retailerID, location)
-# VALUES
-# (1, 'Vancouver'),
-# (2, 'Banff'),
-# (3, 'Castlegar'),
-# (4, 'Calgary'),
-# (5, 'Toronto'),
-# (6, 'Ottawa'),
-# (7, 'Winnipeg'),
-# (8, 'Saskatoon'),
-# (9, 'Fredericton'),
-# (10, 'Victoria');
-#
-# INSERT INTO Equipment (serialNum, purpose)
-# VALUES
-# (1, 'Slicing'),
-# (2, 'Mashing'),
-# (3, 'Boiling'),
-# (4, 'Baking'),
-# (5, 'Frying'),
-# (6, 'Grilling'),
-# (7, 'Mixing'),
-# (8, 'Chopping'),
-# (9, 'Blending'),
-# (10, 'Roasting');
-#
-# INSERT INTO Farm (ID, address, location, size, totalOutput, certificationAgencyID, certificationGrade, seedSupplierID)
-# VALUES
-# (1, '123 Farm Road', 'Rural Area A', 100, 500.0, 1, 'A', 1),
-# (2, '456 Farm Lane', 'Suburban Area B', 150, 700.0, 2, 'B', 2),
-# (3, '789 Farm Street', 'Urban Area C', 200, 900.0, 3, 'C', 3),
-# (4, '321 Farm Avenue', 'Hilly Area D', 120, 600.0, 4, 'A', 4),
-# (5, '555 Farm Boulevard', 'Coastal Area E', 180, 800.0, 5, 'B', 5),
-# (6, '777 Farm Highway', 'Mountainous Area F', 250, 1000.0, 6, 'C', 6),
-# (7, '888 Farm Drive', 'Desert Area G', 300, 1200.0, 7, 'A', 7),
-# (8, '999 Farm Path', 'Forest Area H', 170, 750.0, 8, 'B', 8),
-# (9, '222 Farm Trail', 'Island Area I', 140, 650.0, 9, 'C', 9),
-# (10, '444 Farm Way', 'Tundra Area J', 270, 1100.0, 10, 'A', 10);
-#
-# INSERT INTO Farmer (ID, name, phone, shift, managerID, farmID)
-# VALUES
-# (1, 'John Doe', 1234567890, 1, NULL, 1),
-# (2, 'Jane Smith', 1234567812, 2, 1, 2),
-# (3, 'David Johnson', 1234567815, 1, 2, 3),
-# (4, 'Emily Williams', 1234567851, 2, 1, 4),
-# (5, 'Michael Brown', 1234567741, 1, 3, 5),
-# (6, 'Olivia Jones', 1234567641, 2, 2, 6),
-# (7, 'William Miller', 1234567511, 1, 3, 7),
-# (8, 'Sophia Davis', 1234567111, 2, 1, 8),
-# (9, 'James Wilson', 1234567222, 1, 2, 9),
-# (10, 'Emma Martinez', 1234567333, 2, 3, 10);
-#
-# INSERT INTO FarmingEquipment (serialNum, name, ownerID)
-# VALUES
-# (1, 'Tractor A', 1),
-# (2, 'Harvester B', 2),
-# (3, 'Plow C', 3),
-# (4, 'Seeder D', 4),
-# (5, 'Irrigation System E', 5),
-# (6, 'Cultivator F', 6),
-# (7, 'Sprayer G', 7),
-# (8, 'Fertilizer Spreader H', 8),
-# (9, 'Tiller I', 9),
-# (10, 'Mower J', 10);
-#
-# INSERT INTO Researcher (ID, focus, yearsActive, supplierID)
-# VALUES
-# (1, 'Crop Improvement', 5, 1),
-# (2, 'Soil Health', 8, 2),
-# (3, 'Pest Control', 6, 3),
-# (4, 'Climate Adaptation', 4, 4),
-# (5, 'Genetic Engineering', 7, 5),
-# (6, 'Organic Farming', 9, 6),
-# (7, 'Water Conservation', 5, 7),
-# (8, 'Sustainable Agriculture', 10, 8),
-# (9, 'Crop Disease', 6, 9),
-# (10, 'Nutrient Management', 7, 10);
-#
-# INSERT INTO MarketAnalyst (analystID, name)
-# VALUES
-# (1, 'Emily Johnson'),
-# (2, 'Michael Smith'),
-# (3, 'Sophia Williams'),
-# (4, 'Oliver Brown'),
-# (5, 'Emma Davis'),
-# (6, 'Daniel Wilson'),
-# (7, 'Lily Martinez'),
-# (8, 'Lucas Garcia'),
-# (9, 'Ava Rodriguez'),
-# (10, 'William Lee');
-#
-# INSERT INTO Advertiser (name, company, tradeShowID)
-# VALUES
-# ('AdCo A', 'Marketing Solutions A', 1),
-# ('Global Advertisers B', 'Ad Services B', 2),
-# ('Advertise Now C', 'Marketing Firm C', 3),
-# ('AdCo D', 'Advertising Group D', 4),
-# ('International Adverts E', 'Ad Agency E', 5),
-# ('Ad Group F', 'Promotions Company F', 6),
-# ('Global Ad Services G', 'AdCo G', 7),
-# ('Advertise It H', 'Marketing Agency H', 8),
-# ('Worldwide Advertisements I', 'Ad Firm I', 9),
-# ('AdCo J', 'Marketing Company J', 10);
-#
-# INSERT INTO SeedType (seedSupplierID, farmID, seedType)
-# VALUES
-# (1, 1, 'Alaska Bloom'),
-# (2, 2, 'Banana Fingerling'),
-# (3, 3, 'Bellanita'),
-# (4, 4, 'Bintje'),
-# (5, 5, 'Blazer Russet'),
-# (6, 6, 'Colomba'),
-# (7, 7, 'Goldrush'),
-# (8, 8, 'Cristina'),
-# (9, 9, 'Kennebec'),
-# (10, 10, 'Pacific Russet');
-#
-# INSERT INTO ProcessingEquipment (serialNum, processingCapacity, ownerID)
-# VALUES
-# (1, 100, 1),
-# (2, 150, 2),
-# (3, 200, 3),
-# (4, 120, 4),
-# (5, 180, 5),
-# (6, 250, 6),
-# (7, 300, 7),
-# (8, 170, 8),
-# (9, 140, 9),
-# (10, 270, 10);
-#
-# INSERT INTO SellsTo (retailerID, consumerID, price)
-# VALUES
-# (1, 1, 2.5),
-# (2, 2, 3.0),
-# (3, 3, 2.8),
-# (4, 4, 3.2),
-# (5, 5, 3.5),
-# (6, 6, 2.7),
-# (7, 7, 3.1),
-# (8, 8, 2.6),
-# (9, 9, 2.9),
-# (10, 10, 3.6);
-#
-# INSERT INTO Potato (type, price, maxSize, processingCompanyID, storageFacilityID, farmID)
-# VALUES
-# ('Alaska Bloom', 2, 10.5, 1, 1, 1),
-# ('Banana Fingerling', 3, 11.0, 2, 2, 2),
-# ('Bellanita', 2, 10.0, 3, 3, 3),
-# ('Bintje', 4, 12.0, 4, 4, 4),
-# ('Blazer Russet', 3, 11.5, 5, 5, 5),
-# ('Colomba', 2, 10.2, 6, 6, 6),
-# ('GoldRush', 4, 11.8, 7, 7, 7),
-# ('Cristina', 3, 10.7, 8, 8, 8),
-# ('Kennebec', 2, 10.3, 9, 9, 9),
-# ('Pacific Russet', 4, 12.5, 10, 10, 10);
-#
-#
-# INSERT INTO Recipe (recipeName, potatoType, consumerID, cookingStyle)
-# VALUES
-# ('Potato Soup', 'Alaska Bloom', 1, 'Boiled'),
-# ('Mashed Potatoes', 'Banana Fingerling', 2, 'Mashed'),
-# ('Roasted Potatoes', 'Bellanita', 3, 'Roasted'),
-# ('Potato Salad', 'Bintje', 4, 'Chilled'),
-# ('Potato Wedges', 'Blazer Russet', 5, 'Baked'),
-# ('Scalloped Potatoes', 'Colomba', 6, 'Baked'),
-# ('Potato Pancakes', 'Goldrush', 7, 'Fried'),
-# ('Potato Chips', 'Cristina', 8, 'Fried'),
-# ('Potato Bread', 'Kennebec', 9, 'Baked'),
-# ('Potato Gnocchi', 'Pacific Russet', 10, 'Boiled');
-#
-# INSERT INTO Ingredients (recipeName, ingredient)
-# VALUES
-# ('Potato Soup', 'Potatoes'),
-# ('Mashed Potatoes', 'Potatoes'),
-# ('Roasted Potatoes', 'Potatoes'),
-# ('Potato Salad', 'Potatoes'),
-# ('Potato Wedges', 'Potatoes'),
-# ('Scalloped Potatoes', 'Potatoes'),
-# ('Potato Pancakes', 'Potatoes'),
-# ('Potato Chips', 'Potatoes'),
-# ('Potato Bread', 'Potatoes'),
-# ('Potato Gnocchi', 'Potatoes');
-#
-#
-# INSERT INTO ShowAttendees (showID, farmerID, researcherID, distributorID)
-# VALUES
-# (1, 1, 1, 1),
-# (2, 2, 2, 2),
-# (3, 3, 3, 3),
-# (4, 4, 4, 4),
-# (5, 5, 5, 5),
-# (6, 6, 6, 6),
-# (7, 7, 7, 7),
-# (8, 8, 8, 8),
-# (9, 9, 9, 9),
-# (10, 10, 10, 10);
+#     SeedType [seedSupplierID, farmID, seedType]
+CREATE TABLE SeedType
+(
+    seedSupplierID INT,
+    farmID         INT,
+    seedType       VARCHAR(255),
+    FOREIGN KEY (seedSupplierID) REFERENCES SeedSupplier (ID),
+    FOREIGN KEY (farmID) REFERENCES Farm (ID)
+);
+###################
 
-# //////////////////////////QUERIES
+CREATE TABLE StorageFacility
+(
+    ID       INTEGER,
+    location CHAR(50),
+    capacity INTEGER,
+    PRIMARY KEY (ID)
+);
 
-# As a market analyst, I need to know which types of potatoes are most popular among consumers to focus on market trends.
-# SELECT Potato.type, COUNT(*) AS SalesCount
-# FROM Potato
-# JOIN Recipe ON Recipe.potatoType = Potato.type
-# JOIN Ingredients ON Ingredients.recipeName = Recipe.recipeName
-# JOIN SellsTo ON SellsTo.consumerID = Recipe.consumerID
-# GROUP BY Potato.type
-# ORDER BY SalesCount DESC
-# LIMIT 10;
+CREATE TABLE ProcessingCompany
+(
+    ID           INTEGER,
+    location     CHAR(50),
+    wasteCompany INTEGER,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (wasteCompany) REFERENCES WasteManagement (ID)
+);
 
-# As a farm manager, I want to see a list of farms along with their total output and the types of potatoes they produce.
-# SELECT Farm.ID, Farm.totalOutput, GROUP_CONCAT(DISTINCT Potato.type) AS PotatoTypes
-# FROM Farm
-# JOIN Potato ON Farm.ID = Potato.farmID
-# GROUP BY Farm.ID;
+CREATE TABLE CertificationAgency
+(
+    companyID INTEGER,
+    `name`    CHAR(20),
+    region    CHAR(20),
+    PRIMARY KEY (companyID)
+);
 
-#As an equipment supplier, I need a report on which farming equipment is used most frequently by farmers.
-# SELECT FarmingEquipment.name, COUNT(DISTINCT Farmer.ID) AS NumberOfFarmersUsing
-# FROM FarmingEquipment
-# JOIN Farmer ON FarmingEquipment.ownerID = Farmer.ID
-# GROUP BY FarmingEquipment.name
-# ORDER BY NumberOfFarmersUsing DESC;
+CREATE TABLE WasteManagement
+(
+    ID       INTEGER,
+    location CHAR(50),
+    PRIMARY KEY (ID)
+);
 
-# As a distributor, I need a list of importers and exporters of potatoes, including their locations
-# and the number of transactions.
-# SELECT Importer.companyName AS ImporterName, Exporter.companyName AS ExporterName, Importer.homeCity, Exporter.branchNo, COUNT(*) AS NumberOfTransactions
-# FROM Importer
-# JOIN Exporter ON Importer.exporterCompany = Exporter.companyName AND Importer.exporterBranch = Exporter.branchNo
-# GROUP BY Importer.companyName, Importer.homeCity, Exporter.companyName;
+CREATE TABLE ProcessingCompany
+(
+    ID           INTEGER,
+    location     CHAR(50),
+    wasteCompany INTEGER,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (wasteCompany) REFERENCES WasteManagement (ID)
+);
 
-#As a retailer, I need to understand consumer preferences for potato types in different regions to tailor my inventory.
-# SELECT Consumer.homeRegion, Potato.type, COUNT(*) AS PreferenceCount
-# FROM Consumer
-# JOIN Recipe ON Consumer.ID = Recipe.consumerID
-# JOIN Potato ON Recipe.potatoType = Potato.type
-# GROUP BY Consumer.homeRegion, Potato.type
-# ORDER BY Consumer.homeRegion, PreferenceCount DESC;
+CREATE TABLE ProcessingEquipment
+(
+    serialNum          INTEGER,
+    processingCapacity INTEGER,
+    ownerID            INTEGER,
+    PRIMARY KEY (serialNum),
+    FOREIGN KEY (serialNum) references Equipment (serialNum) ON DELETE CASCADE,
+    FOREIGN KEY (ownerID) references ProcessingCompany (ID) ON DELETE SET NULL
+);
 
 
-# As a supply chain analyst, I want to track the journey of potatoes from farms through processing
-# companies to retailers, to understand the supply chain dynamics.
-SELECT Farm.ID                     AS FarmID,
-       ProcessingCompany.ID        AS ProcessingCompanyID,
-       Retailer.ID                 AS RetailerID,
-       COUNT(DISTINCT Potato.type) AS TypesOfPotatoes
-FROM Farm
-         JOIN Potato ON Farm.ID = Potato.farmID
-         JOIN ProcessingCompany ON Potato.processingCompanyID = ProcessingCompany.ID
-         JOIN Recipe ON Potato.type = Recipe.potatoType
-         JOIN SellsTo ON Recipe.consumerID = SellsTo.consumerID
-         JOIN Retailer ON SellsTo.retailerID = Retailer.ID
-GROUP BY Farm.ID, ProcessingCompany.ID, Retailer.ID;
+CREATE TABLE Exporter
+(
+    companyName VARCHAR(255),
+    branchNo    INTEGER,
+    PRIMARY KEY (companyName, branchNo)
+);
 
+CREATE TABLE Importer
+(
+    companyName     VARCHAR(255),
+    homeCity        VARCHAR(255),
+    distributorID   INT,
+    exporterCompany VARCHAR(255),
+    exporterBranch  INT,
+    PRIMARY KEY (companyName, homeCity),
+    FOREIGN KEY (distributorID) REFERENCES Distributor (ID),
+    FOREIGN KEY (exporterCompany) REFERENCES Exporter (companyName),
+    FOREIGN KEY (exporterBranch) REFERENCES Exporter (branchNo)
+);
+
+CREATE TABLE Retailer
+(
+    ID            INT,
+    yearlyProfit  FLOAT,
+    distributorID INT,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (distributorID) REFERENCES Distributor (ID)
+);
+
+CREATE TABLE Consumer
+(
+    ID            INT,
+    firstName     TEXT,
+    middleName    TEXT,
+    lastName      TEXT,
+    yearlyExpense FLOAT,
+    homeRegion    TEXT,
+    PRIMARY KEY (ID)
+);
+
+CREATE TABLE SellsTo
+(
+    retailerID INT,
+    consumerID INT,
+    price      FLOAT,
+    PRIMARY KEY (retailerID, consumerID),
+    FOREIGN KEY (retailerID) REFERENCES Retailer (ID),
+    FOREIGN KEY (consumerID) REFERENCES Consumer (ID)
+);
+
+CREATE TABLE StoreLocation
+(
+    retailerID INT,
+    location   VARCHAR(255),
+    PRIMARY KEY (retailerID, location),
+    FOREIGN KEY (retailerID) REFERENCES Retailer (ID)
+);
+
+CREATE TABLE Ingredients
+(
+    recipeName VARCHAR(50),
+    ingredient VARCHAR(255),
+    PRIMARY KEY (recipeName, ingredient),
+    FOREIGN KEY (recipeName) REFERENCES Recipe (recipeName)
+);
+
+CREATE TABLE Equipment
+(
+    serialNum int,
+    purpose   varchar(150),
+    PRIMARY KEY (serialNum)
+);
+
+CREATE TABLE MarketAnalyst
+(
+    analystID int,
+    name      varchar(50),
+    PRIMARY KEY (analystID)
+);
+
+CREATE TABLE TradeShow
+(
+    showID   int,
+    location varchar(150),
+    PRIMARY KEY (showID)
+);
+
+CREATE TABLE Distributor
+(
+    ID          int,
+    tradeShowID int,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (tradeShowID) REFERENCES TradeShow (showID)
+);
+
+CREATE TABLE Advertiser
+(
+    name        varchar(50),
+    company     varchar(50),
+    tradeShowID int,
+    PRIMARY KEY (name),
+    FOREIGN KEY (tradeShowID) REFERENCES TradeShow (showID)
+);
+
+CREATE TABLE FarmingEquipment
+(
+    serialNum int,
+    name      varchar(50),
+    ownerID   int,
+    PRIMARY KEY (serialNum),
+    FOREIGN KEY (serialNum) REFERENCES Equipment (serialNum),
+    FOREIGN KEY (ownerID) REFERENCES Farmer (ID)
+);
+
+CREATE TABLE ShowAttendees
+(
+    showID        int,
+    farmerID      int,
+    researcherID  int,
+    distributorID int,
+    PRIMARY KEY (showID, farmerID, researcherID, distributorID),
+    FOREIGN KEY (showID) REFERENCES TradeShow (showID),
+    FOREIGN KEY (farmerID) REFERENCES Farmer (ID),
+    FOREIGN KEY (researcherID) REFERENCES Researcher (ID),
+    FOREIGN KEY (distributorID) REFERENCES Distributor (ID)
+);
+
+CREATE TABLE Researcher
+(
+    ID          int,
+    focus       varchar(50),
+    yearsActive int,
+    supplierID  int,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (supplierID) REFERENCES SeedSupplier (ID)
+);
+
+CREATE TABLE Recipe
+(
+    recipeName   varchar(50),
+    potatoType   varchar(50),
+    consumerID   int,
+    cookingStyle varchar(50),
+    PRIMARY KEY (recipeName, potatoType, consumerID),
+    FOREIGN KEY (potatoType) REFERENCES Potato (type),
+    FOREIGN KEY (consumerID) REFERENCES Consumer (ID)
+);
